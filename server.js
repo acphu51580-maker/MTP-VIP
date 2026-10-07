@@ -7,14 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ============ CẤU HÌNH ============
 const PORT = process.env.PORT || 3000;
 const ADMIN_USER = process.env.ADMIN_USER || 'MTP';
 const ADMIN_PASS = process.env.ADMIN_PASS || 'MTP313';
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'mtp-secret-2024';
 const DB_FILE = path.join('/tmp', 'keys.json');
 
-// ============ DATABASE ============
 function loadDB() {
   try {
     if (!fs.existsSync(DB_FILE)) {
@@ -31,7 +29,6 @@ function saveDB(data) {
   } catch (e) {}
 }
 
-// ============ TẠO KEY ============
 function randomHex(len) {
   const chars = '0123456789ABCDEF';
   let r = '';
@@ -42,7 +39,6 @@ function generateKey() {
   return 'VL-' + randomHex(8) + '-' + randomHex(8) + '-' + randomHex(8);
 }
 
-// ============ MIDDLEWARE ============
 function authAdmin(req, res, next) {
   const token = req.headers['x-admin-token'] || req.body.token || req.query.token;
   if (token !== ADMIN_TOKEN) {
@@ -51,12 +47,10 @@ function authAdmin(req, res, next) {
   next();
 }
 
-// ============ ROUTES ============
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Game License Server dang chay' });
 });
 
-// Tạo key mới
 app.post('/api/keys', authAdmin, (req, res) => {
   const maxTB = req.body.maxTB || 1;
   const duration = req.body.duration || '2h';
@@ -79,13 +73,11 @@ app.post('/api/keys', authAdmin, (req, res) => {
   res.json({ success: true, key: newKey });
 });
 
-// Danh sách key
 app.get('/api/keys', authAdmin, (req, res) => {
   const db = loadDB();
   res.json({ success: true, keys: db.keys });
 });
 
-// Xóa key
 app.delete('/api/keys/:id', authAdmin, (req, res) => {
   const db = loadDB();
   db.keys = db.keys.filter(k => k.id !== req.params.id);
@@ -93,7 +85,6 @@ app.delete('/api/keys/:id', authAdmin, (req, res) => {
   res.json({ success: true });
 });
 
-// Verify key
 app.post('/api/verify', (req, res) => {
   const key = req.body.key;
   const deviceId = req.body.deviceId;
@@ -114,7 +105,6 @@ app.post('/api/verify', (req, res) => {
   res.json({ success: true, key: found });
 });
 
-// ============ HELPER ============
 function parseDuration(str) {
   const map = {
     '1h': 3600000, '2h': 7200000, '6h': 21600000, '10h': 36000000,
@@ -124,16 +114,7 @@ function parseDuration(str) {
   return map[str] || 7200000;
 }
 
-// ============ START ============
 app.listen(PORT, () => {
   console.log('Server chay tai port ' + PORT);
   console.log('Admin Token: ' + ADMIN_TOKEN);
- **Commit new file**
-
-✅ Xong! Giờ repo của bạn có 3 file: `README.md`, `package.json`, `server.js`
-
----
-
-# BƯỚC 4: Tạo tài khoản Render
-
-### 4.1. Mở tab mới, vào:
+});
