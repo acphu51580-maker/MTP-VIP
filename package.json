@@ -1,9 +1,5 @@
-
-### 2.3. Ở ô nội dung lớn, **copy paste** đoạn này:
-
-```json
 {
-  "name": "game-license-server",
+  "name": "mtp-vip",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
